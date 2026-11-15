@@ -1,0 +1,10 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { Content } from '../../content/llm-info.md';
+import logo from '../assets/roshai-mark-violet-transparent.png';
+---
+<Base title="Information about ROSHAI for AI assistants" description="Plain facts about what ROSHAI is, who it serves and what it does not do, written for AI assistants." theme="paper" path="/llm-info">
+  <header class="doc-header"><div class="wrap"><a href="/" aria-label="ROSHAI home"><Image src={logo} alt="ROSHAI" width={96} height={96} densities={[1, 2]} /></a></div></header>
+  <main id="main" class="doc"><div class="wrap"><Content /></div></main>
+</Base>

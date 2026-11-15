@@ -1,0 +1,151 @@
+---
+import { Picture, Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Flywheel from '../components/Flywheel.astro';
+import { parseLanding, str, list, loadPublications } from '../lib/content';
+import logo from '../assets/roshai-mark-aqua-transparent.png';
+import photo from '../assets/principal.jpg';
+
+const c = parseLanding();
+const hero = c.hero.fields, gap = c.gap.fields, off = c.offerings, method = c.method, pr = c.principal.fields, ct = c.contact.fields, ft = c.footer.fields;
+const offers = off.items.filter((i) => i.type === 'offering');
+const steps = method.items.filter((i) => i.type === 'flywheel_step').map((i) => ({ label: str(i.fields.label), kind: str(i.fields.kind) }));
+const commitments = method.items.filter((i) => i.type === 'commitment');
+const pubs = loadPublications();
+const description = str(hero.positioning);
+
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': 'https://roshai.co/#org',
+    name: 'ROSHAI',
+    alternateName: 'Responsible Open-Source Human-Augmented Intelligence',
+    url: 'https://roshai.co/',
+    logo: 'https://roshai.co/icon-512.png',
+    description,
+    address: { '@type': 'PostalAddress', addressLocality: 'Oakland', addressRegion: 'CA', addressCountry: 'US' },
+    sameAs: [str(ct.secondary_url)],
+    founder: { '@id': 'https://roshai.co/#founder' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': 'https://roshai.co/#founder',
+    name: str(pr.name),
+    jobTitle: 'Founder and Principal Analyst',
+    worksFor: { '@id': 'https://roshai.co/#org' },
+  },
+];
+---
+<Base title="ROSHAI · Human-Augmented Intelligence" description={description} path="/" jsonld={jsonld}>
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <span class="tick tl" aria-hidden="true"></span><span class="tick tr" aria-hidden="true"></span>
+        <span class="tick bl" aria-hidden="true"></span><span class="tick br" aria-hidden="true"></span>
+        <div class="logo"><Image src={logo} alt="ROSHAI" width={128} height={128} densities={[1, 2]} loading="eager" /></div>
+        <p class="eyebrow">{str(hero.eyebrow)}</p>
+        <h1>{str(hero.headline)}</h1>
+        <p class="positioning">{str(hero.positioning)}</p>
+        <div class="actions">
+          <a class="btn" href={str(ct.primary_url)} target="_blank" rel="noopener noreferrer">{str(hero.primary_button)}</a>
+          <a class="link" href={`#${str(method.fields.anchor)}`}>{str(hero.secondary_link)}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="gap">
+      <div class="wrap">
+        <p class="eyebrow">{str(gap.eyebrow)}</p>
+        <h2>{str(gap.heading)}</h2>
+        {list(gap.body).map((p) => <p>{p}</p>)}
+      </div>
+    </section>
+
+    <section class="offerings">
+      <div class="wrap">
+        <p class="eyebrow">{str(off.fields.eyebrow)}</p>
+        <h2>{str(off.fields.heading)}</h2>
+        <div class="cards">
+          {offers.map((o) => (
+            <article class="card">
+              <p class="label">{str(o.fields.label)}</p>
+              <h3>{str(o.fields.title)}</h3>
+              <p>{str(o.fields.body)}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="method" id={str(method.fields.anchor)}>
+      <div class="wrap">
+        <p class="eyebrow">{str(method.fields.eyebrow)}</p>
+        <h2>{str(method.fields.heading)}</h2>
+        <div class="method-grid">
+          <figure class="diagram">
+            <Flywheel steps={steps} ariaLabel={str(method.fields.diagram_aria_label)} />
+            <figcaption>{str(method.fields.diagram_caption)}</figcaption>
+          </figure>
+          <div class="commitments">
+            {commitments.map((m) => (
+              <div class="commitment">
+                <h3>{str(m.fields.title)}</h3>
+                <p>{str(m.fields.body)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {pubs.length > 0 && (
+      <section class="pubs">
+        <div class="wrap">
+          <ul>
+            {pubs.map((p) => (
+              <li class="card"><h3><a class="link" href={p.pdf}>{p.title}</a></h3><p class="small">{p.date}</p><p>{p.summary}</p></li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <section class="principal">
+      <div class="wrap">
+        <p class="eyebrow">{str(pr.eyebrow)}</p>
+        <div class="principal-grid">
+          <div class="photo">
+            <Picture src={photo} formats={['avif', 'webp']} fallbackFormat="jpg" widths={[280, 400, 800]} sizes="(min-width: 960px) 400px, (min-width: 768px) 280px, 100vw" alt={str(pr.photo_alt)} width={400} height={400} loading="lazy" />
+          </div>
+          <div>
+            <h2>{str(pr.name)}</h2>
+            <p class="role">{str(pr.title)}</p>
+            {list(pr.bio).map((p) => <p>{p}</p>)}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact">
+      <div class="wrap">
+        <p class="eyebrow">{str(ct.eyebrow)}</p>
+        <h2>{str(ct.heading)}</h2>
+        <p>{str(ct.body)}</p>
+        <div class="actions">
+          <a class="btn" href={str(ct.primary_url)} target="_blank" rel="noopener noreferrer">{str(ct.primary_button)}</a>
+          <a class="link" href={str(ct.secondary_url)} target="_blank" rel="noopener noreferrer">{str(ct.secondary_link)}</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <p>{str(ft.line_1)}</p>
+      <p>{str(ft.line_2)}</p>
+      <p><a href={str(ft.llm_link_url)}>{str(ft.llm_link_text)}</a></p>
+    </div>
+  </footer>
+</Base>

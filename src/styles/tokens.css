@@ -1,0 +1,48 @@
+:root {
+  /* palette */
+  --violet: #2d0196;
+  --aqua: #10ffe2;
+  --periwinkle: #4c5fd1;
+  --periwinkle-light: #8e9bf2;
+  --tangerine: #ffa168;
+  --deep-violet: #1c0a5c;
+  --ink: #12062e;
+  --paper: #f6f5fb;
+  --graphite: #3c3c3b;
+  --lavender: #c9c3ef;
+  --muted: #5b5678;
+
+  /* semantic, Violet theme (landing page) */
+  --surface: var(--violet);
+  --surface-raised: var(--deep-violet);
+  --surface-sunken: var(--ink);
+  --text: var(--paper);
+  --text-muted: var(--lavender);
+  --heading: var(--aqua);
+  --line: var(--periwinkle-light);
+  --machine: var(--periwinkle-light);
+  --human: var(--tangerine);
+  --on-human: var(--ink);
+  --focus: var(--aqua);
+
+  /* spacing */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-6: 24px; --space-8: 32px; --space-12: 48px; --space-16: 64px; --space-32: 128px;
+
+  /* radius and strokes */
+  --radius-sm: 4px; --radius-md: 12px; --radius-lg: 24px;
+  --stroke-hairline: 1px; --stroke-inline: 3px; --stroke-connector: 4px;
+}
+
+/* Paper theme, used on /llm-info */
+[data-theme="paper"] {
+  --surface: var(--paper);
+  --surface-raised: #ffffff;
+  --surface-sunken: #edebf7;
+  --text: var(--graphite);
+  --text-muted: var(--muted);
+  --heading: var(--violet);
+  --line: var(--periwinkle);
+  --machine: var(--periwinkle);
+  --focus: var(--violet);
+}

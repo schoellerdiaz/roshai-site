@@ -1,0 +1,31 @@
+---
+interface Step { label: string; kind: string }
+interface Props { steps: Step[]; ariaLabel: string }
+const { steps, ariaLabel } = Astro.props;
+const cx = 170, cy = 170, r = 104, w = 124, h = 58;
+const angles = [-90, 0, 90, 180]; // top, right, bottom, left; clockwise
+const split = (s: string): string[] => {
+  const i = s.lastIndexOf(' ');
+  return i > 0 ? [s.slice(0, i), s.slice(i + 1)] : [s];
+};
+const nodes = steps.slice(0, 4).map((s, i) => {
+  const a = (angles[i] * Math.PI) / 180;
+  return { ...s, lines: split(s.label), x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+});
+const arrows = [-45, 45, 135, 225].map((deg) => {
+  const a = (deg * Math.PI) / 180;
+  return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), rot: deg + 90 };
+});
+---
+<svg viewBox="0 0 340 340" role="img" aria-label={ariaLabel} xmlns="http://www.w3.org/2000/svg">
+  <circle class="fw-ring" cx={cx} cy={cy} r={r} />
+  {arrows.map((a) => <polygon class="fw-arrow" points="10,0 -7,-9 -7,9" transform={`translate(${a.x.toFixed(1)} ${a.y.toFixed(1)}) rotate(${a.rot})`} />)}
+  {nodes.map((n) => (
+    <g>
+      <rect class={n.kind === 'human' ? 'fw-node-human' : 'fw-node-machine'} x={(n.x - w / 2).toFixed(1)} y={(n.y - h / 2).toFixed(1)} width={w} height={h} rx="12" />
+      <text class={`fw-label ${n.kind === 'human' ? 'fw-label-human' : 'fw-label-machine'}`} y={n.y.toFixed(1)}>
+        {n.lines.map((ln, i) => <tspan x={n.x.toFixed(1)} dy={n.lines.length === 1 ? 0 : i === 0 ? -10 : 20}>{ln}</tspan>)}
+      </text>
+    </g>
+  ))}
+</svg>
